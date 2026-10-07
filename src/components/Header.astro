@@ -1,9 +1,9 @@
 ---
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const courses = [
-    { name: "STÆ2A", href: `${base}stae2a` },
-    { name: "STÆ2B", href: `${base}stae2b` },
+    { name: "STÆ2A", href: `${base}/stae2a` },
+    { name: "STÆ2B", href: `${base}/stae2b` },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -11,7 +11,7 @@ const currentPath = Astro.url.pathname;
 
 <header class="site-header">
     <div class="header-container">
-        <a href={base} class="site-title">
+        <a href={`${base}/`} class="site-title">
             Kennsluvefur
         </a>
 
