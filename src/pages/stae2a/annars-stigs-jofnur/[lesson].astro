@@ -1,0 +1,30 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+    const lessons = await getCollection("lessons");
+
+    const chapterLessons = lessons.filter((lesson) =>
+        lesson.id.startsWith("stae2a/annars-stigs-jofnur/")
+    );
+
+    return chapterLessons.map((lesson) => ({
+        params: {
+            lesson: lesson.id.split("/").at(-1),
+        },
+        props: {
+            lesson,
+        },
+    }));
+}
+
+const { lesson } = Astro.props;
+const { Content } = await render(lesson);
+---
+
+<Layout title={`${lesson.data.title} | Annars stigs jöfnur`}>
+    <article class="lesson">
+        <Content />
+    </article>
+</Layout>
