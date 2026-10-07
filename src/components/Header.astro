@@ -1,0 +1,32 @@
+---
+const base = import.meta.env.BASE_URL;
+
+const courses = [
+    { name: "STÆ2A", href: `${base}stae2a` },
+    { name: "STÆ2B", href: `${base}stae2b` },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+    <div class="header-container">
+        <a href={base} class="site-title">
+            Kennsluvefur
+        </a>
+
+        <nav aria-label="Áfangar">
+            {courses.map((course) => (
+                <a
+                    href={course.href}
+                    class:list={[
+                        "course-link",
+                        { active: currentPath.startsWith(course.href) },
+                    ]}
+                >
+                    {course.name}
+                </a>
+            ))}
+        </nav>
+    </div>
+</header>

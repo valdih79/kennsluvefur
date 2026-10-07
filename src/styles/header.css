@@ -1,0 +1,43 @@
+.site-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.header-container {
+  width: min(1100px, calc(100% - 48px));
+  height: 72px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.site-header nav {
+  align-self: stretch;
+  display: flex;
+  gap: 32px;
+}
+
+.course-link {
+  display: flex;
+  align-items: center;
+
+  color: #64748b;
+  font-weight: 600;
+  text-decoration: none;
+
+  border-bottom: 3px solid transparent;
+}
+
+.course-link:hover,
+.course-link.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
