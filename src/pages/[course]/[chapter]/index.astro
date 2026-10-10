@@ -1,0 +1,95 @@
+---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+
+type Lesson = CollectionEntry<"lessons">;
+
+export async function getStaticPaths() {
+    const lessons = await getCollection("lessons");
+
+    const chapters = new Map<string, Lesson[]>();
+
+    for (const lesson of lessons) {
+        const [course, chapter] = lesson.id.split("/");
+
+        if (!course || !chapter) {
+            continue;
+        }
+
+        const key = `${course}/${chapter}`;
+
+        if (!chapters.has(key)) {
+            chapters.set(key, []);
+        }
+
+        chapters.get(key)!.push(lesson);
+    }
+
+    return Array.from(chapters.entries()).map(([key, lessons]) => {
+        const [course, chapter] = key.split("/");
+
+        return {
+            params: {
+                course,
+                chapter,
+            },
+            props: {
+                lessons,
+            },
+        };
+    });
+}
+
+const { course, chapter } = Astro.params;
+const { lessons } = Astro.props as { lessons: Lesson[] };
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const sortedLessons = lessons.sort(
+    (a: Lesson, b: Lesson) => a.data.order - b.data.order
+);
+
+const chapterTitles: Record<string, string> = {
+    "annars-stigs-jofnur": "Annars stigs jöfnur",
+    "fleygbogar": "Fleygbogar",
+};
+
+const chapterTitle = chapterTitles[chapter ?? ""] ?? chapter;
+---
+
+<Layout title={`${chapterTitle} | ${course?.toUpperCase()}`}>
+    <section class="course-header">
+        <p class="course-code">{course?.toUpperCase()}</p>
+        <h1>{chapterTitle}</h1>
+    </section>
+
+    <section>
+        <h2>Efni</h2>
+
+        <div class="chapter-list">
+            {
+                sortedLessons.map((lesson: Lesson, index: number) => {
+                    const lessonSlug = lesson.id.split("/").at(-1);
+
+                    return (
+                        <a
+                            class="chapter-card"
+                            href={`${base}/${course}/${chapter}/${lessonSlug}`}
+                        >
+                            <span class="chapter-number">
+                                {String(index + 1).padStart(2, "0")}
+                            </span>
+
+                            <div>
+                                <h3>{lesson.data.title}</h3>
+                            </div>
+
+                            <span class="chapter-arrow">→</span>
+                        </a>
+                    );
+                })
+            }
+        </div>
+    </section>
+</Layout>
